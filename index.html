@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline';" />
+  <title>Marcos y cuadros — Demo Oficial | Cuadros Personalizados</title>
+  <meta name="description" content="Demo interactiva de portafolio de Marcos y cuadros: cuadros personalizados 21x30 cm en madera negra con vidrio, estudio de diseño en vivo, promociones y gestión de ventas." />
+  <link rel="icon" type="image/jpeg" href="./assets/logo-marcos-y-cuadros.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-base: #0c0c0f;
+      --bg-elevated: #141419;
+      --bg-card: #191920;
+      --bg-card-hover: #202029;
+      --surface-warm: #f6f3ec;
+      --text-primary: #f5f4f0;
+      --text-secondary: #b0aea8;
+      --text-muted: #787670;
+      --accent-red: #d9232e;
+      --accent-red-glow: rgba(217, 35, 46, 0.35);
+      --accent-gold: #c8a96e;
+      --accent-emerald: #10b981;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --wall-bg: radial-gradient(circle at 50% 25%, #2a241d 0%, #121114 75%);
+      --wall-card-border: rgba(200, 169, 110, 0.22);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-frame: 0 24px 48px -12px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.06);
+      --font-display: 'Cinzel', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body.wall-dark {
+      --wall-bg: radial-gradient(circle at 50% 20%, #1d1e26 0%, #09090b 80%);
+      --wall-card-border: rgba(255, 255, 255, 0.12);
+    }
+
+    body.wall-neon {
+      --wall-bg: radial-gradient(circle at 50% 20%, #3a0d14 0%, #14080c 55%, #09090b 90%);
+      --wall-card-border: rgba(217, 35, 46, 0.38);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--wall-bg);
+      transition: background 0.5s ease;
+      overflow-x: hidden;
+      line-height: 1.55;
+    }
+
+    /* Tactile Buttons with Spring + Ripple */
+    .btn {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      padding: 0.72rem 1.25rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.25s ease, border-color 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.015);
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.96);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #e12632 0%, #b51822 100%);
+      border-color: rgba(255, 120, 128, 0.45);
+      color: #fff;
+      box-shadow: 0 8px 24px -6px var(--accent-red-glow);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #f02d3a 0%, #c81b26 100%);
+      box-shadow: 0 12px 30px -4px rgba(217, 35, 46, 0.55);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #d4b578 0%, #a98647 100%);
+      border-color: rgba(255, 232, 185, 0.45);
+      color: #111;
+      font-weight: 700;
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border-subtle);
+    }
+
+    .btn-sm {
+      padding: 0.45rem 0.85rem;
+      font-size: 0.8rem;
+    }
+
+    .ripple-wave {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: rippleAnim 0.55s linear;
+      background-color: rgba(255, 255, 255, 0.35);
+      pointer-events: none;
+    }
+
+    @keyframes rippleAnim {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Portfolio Demo Top Ribbon */
+    .portfolio-bar {
+      background: linear-gradient(90deg, #111116 0%, #1c1924 50%, #111116 100%);
+      border-bottom: 1px solid rgba(200, 169, 110, 0.3);
+      padding: 0.55rem 1.25rem;
+      font-size: 0.82rem;
+      position: relative;
+      z-index: 60;
+    }
+
+    .portfolio-bar-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .demo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      background: rgba(200, 169, 110, 0.12);
+      border: 1px solid rgba(200, 169, 110, 0.35);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+    }
+
+    .demo-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.8); }
+    }
+
+    .portfolio-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Main Header */
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(12, 12, 15, 0.82);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .header-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.95rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo-wrap {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--surface-warm);
+      border: 2px solid var(--accent-gold);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .brand:hover .brand-logo-wrap {
+      transform: rotate(-3deg) scale(1.06);
+    }
+
+    .brand-logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .brand-text h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.25rem, 2.3vw, 1.65rem);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .brand-text span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--accent-gold);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 1.75rem 1.25rem 4rem;
+    }
+
+    /* Section Headings */
+    .section-block {
+      margin-bottom: 3.5rem;
+    }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-gold);
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.6vw, 2rem);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 0.94rem;
+      max-width: 68ch;
+      margin-top: 0.35rem;
+    }
+
+    /* Controls Bar for 3D Showcase */
+    .gallery-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.65rem;
+      background: rgba(20, 20, 25, 0.78);
+      border: 1px solid var(--border-subtle);
+      padding: 0.65rem 0.9rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1.5rem;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .control-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-right: 0.25rem;
+    }
+
+    .wall-pill {
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .wall-pill.active {
+      border-color: var(--accent-gold);
+      color: var(--text-primary);
+      background: rgba(200, 169, 110, 0.18);
+    }
+
+    /* 3D Interactive Frame Grid */
+    .frames-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      perspective: 1200px;
+    }
+
+    .frames-grid.auto-orbit .frame-card {
+      animation: gentleFloat 5.5s ease-in-out infinite;
+    }
+    .frames-grid.auto-orbit .frame-card:nth-child(2) { animation-delay: 0.9s; }
+    .frames-grid.auto-orbit .frame-card:nth-child(3) { animation-delay: 1.8s; }
+    .frames-grid.auto-orbit .frame-card:nth-child(4) { animation-delay: 2.7s; }
+
+    @keyframes gentleFloat {
+      0%, 100% { transform: rotateY(-5deg) rotateX(2deg) translateY(0px); }
+      50% { transform: rotateY(5deg) rotateX(-2deg) translateY(-7px); }
+    }
+
+    .frame-card {
+      background: var(--bg-card);
+      border: 1px solid var(--wall-card-border);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transform-style: preserve-3d;
+      transition: transform 0.18s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
+      box-shadow: var(--shadow-frame);
+      position: relative;
+    }
+
+    .frame-card:hover {
+      border-color: var(--accent-gold);
+    }
+
+    .artwork-stage {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 3 / 4;
+      background: #0b0b0d;
+      cursor: zoom-in;
+    }
+
+    .artwork-stage img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .frame-card:hover .artwork-stage img {
+      transform: scale(1.04);
+    }
+
+    .glass-glare {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(125deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.03) 38%, transparent 60%);
+      pointer-events: none;
+      opacity: 0.65;
+      transition: opacity 0.3s ease;
+    }
+
+    .frame-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(12, 12, 15, 0.84);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.22rem 0.55rem;
+      border-radius: 6px;
+    }
+
+    .frame-meta {
+      margin-top: 0.95rem;
+    }
+
+    .frame-meta h3 {
+      font-size: 1.04rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .frame-meta p {
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    .frame-footer {
+      margin-top: 0.9rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .price-pill {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--accent-gold);
+    }
+
+    /* About & Specs Compact Strip */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 860px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.4rem;
+    }
+
+    .specs-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .spec-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+    }
+
+    .spec-item strong {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--accent-gold);
+      margin-bottom: 0.15rem;
+    }
+
+    .spec-item span {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+    }
+
+    /* Promos & Flyers Section */
+    .promos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+
+    .flyer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-frame);
+    }
+
+    .flyer-img-wrap {
+      background: #08080a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-height: 430px;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+
+    .flyer-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .flyer-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .promo-highlight-box {
+      background: linear-gradient(135deg, rgba(217, 35, 46, 0.16) 0%, rgba(20, 20, 25, 0.9) 100%);
+      border: 1px solid rgba(217, 35, 46, 0.45);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.1rem;
+    }
+
+    .promo-tiers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .tier-card {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem;
+      text-align: center;
+    }
+
+    .tier-card.featured {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 20px rgba(217, 35, 46, 0.22);
+    }
+
+    .tier-card .qty {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    .tier-card .amount {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0.25rem 0;
+    }
+
+    .tier-card .saving {
+      font-size: 0.74rem;
+      color: var(--accent-emerald);
+      font-weight: 600;
+    }
+
+    /* Customizer & Order Studio */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (max-width: 920px) {
+      .studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .live-frame-preview-box {
+      background: radial-gradient(circle at 50% 35%, #2a2620 0%, #101014 85%);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Physical 21x30cm Black Wood Frame Replica */
+    .physical-frame {
+      width: 100%;
+      max-width: 310px;
+      aspect-ratio: 21 / 30;
+      background: #111113;
+      padding: 16px;
+      border-radius: 3px;
+      box-shadow:
+        0 28px 50px rgba(0, 0, 0, 0.85),
+        inset 0 0 0 2px #26262b,
+        inset 0 0 12px rgba(0, 0, 0, 0.9);
+      position: relative;
+      transition: transform 0.25s ease;
+    }
+
+    .physical-frame-inner {
+      width: 100%;
+      height: 100%;
+      background: #f5f2eb;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .physical-frame-inner.mode-poster .poster-full-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .physical-frame-inner.mode-poster .spotify-layout {
+      display: none;
+    }
+
+    .physical-frame-inner.mode-spotify .poster-full-img {
+      display: none;
+    }
+
+    .spotify-layout {
+      width: 100%;
+      height: 100%;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #141416;
+      background: #f6f3ec;
+    }
+
+    .spotify-cover {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 2px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+    }
+
+    .spotify-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 0.5rem;
+      margin-top: 8px;
+      border-top: 1px solid rgba(0, 0, 0, 0.12);
+      padding-top: 6px;
+    }
+
+    .spotify-tracks {
+      font-size: 0.54rem;
+      line-height: 1.28;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #222;
+      max-width: 54%;
+    }
+
+    .spotify-title-block {
+      text-align: right;
+      max-width: 46%;
+    }
+
+    .spotify-artist {
+      font-size: 0.56rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    .spotify-album {
+      font-size: 0.85rem;
+      font-weight: 800;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: #111;
+      margin-top: 2px;
+    }
+
+    .spotify-date {
+      font-family: var(--font-mono);
+      font-size: 0.52rem;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .spotify-wave {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 14px;
+      margin-bottom: 4px;
+      justify-content: flex-end;
+    }
+
+    .spotify-wave span {
+      display: inline-block;
+      width: 2px;
+      background: #111;
+      border-radius: 2px;
+    }
+
+    /* Form Controls */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+
+    @media (max-width: 560px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .input, .select, .textarea {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: #0f0f13;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .input:focus, .select:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.16);
+    }
+
+    .upload-dropzone {
+      border: 1.5px dashed rgba(200, 169, 110, 0.45);
+      background: rgba(200, 169, 110, 0.05);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .upload-dropzone:hover {
+      background: rgba(200, 169, 110, 0.11);
+      border-color: var(--accent-gold);
+    }
+
+    /* Payment Alias Box */
+    .payment-box {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.32);
+      border-radius: var(--radius-md);
+      padding: 0.95rem 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .alias-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-strong);
+      padding: 0.55rem 0.8rem;
+      border-radius: var(--radius-sm);
+      margin-top: 0.5rem;
+    }
+
+    .alias-code {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-emerald);
+      letter-spacing: 0.03em;
+    }
+
+    .total-summary-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1.1rem;
+      margin: 1rem 0;
+    }
+
+    /* Sales Ledger & Excel Section */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+    }
+
+    .kpi-card span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .kpi-card strong {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      color: var(--text-primary);
+      margin-top: 0.2rem;
+      display: block;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      background: var(--bg-elevated);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 0.78rem 0.95rem;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+    }
+
+    .badge-demo {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: rgba(200, 169, 110, 0.16);
+      color: var(--accent-gold);
+      border: 1px solid rgba(200, 169, 110, 0.35);
+    }
+
+    .badge-real {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.16);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    /* Security, Legal & Bug Governance */
+    .gov-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.35rem;
+    }
+
+    .tabs-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .tab-btn {
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: rgba(200, 169, 110, 0.18);
+      border-color: var(--accent-gold);
+      color: var(--text-primary);
+    }
+
+    .tab-panel {
+      display: none;
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .diag-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      margin: 0.85rem 0;
+    }
+
+    .diag-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.83rem;
+      padding: 0.5rem 0.75rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .status-ok {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-emerald);
+      font-weight: 700;
+    }
+
+    /* Modal / Lightbox */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 5, 8, 0.88);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      position: relative;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      background: #17171f;
+      border: 1px solid var(--accent-gold);
+      color: var(--text-primary);
+      padding: 0.85rem 1.15rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75);
+      font-size: 0.88rem;
+      z-index: 120;
+      transform: translateY(140%);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-width: 360px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    code.inline-code {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.12rem 0.4rem;
+      border-radius: 4px;
+      color: var(--accent-gold);
+    }
+
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem 1.25rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.83rem;
+      background: rgba(10, 10, 13, 0.9);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Portfolio Demo Ribbon (GitHub Pages Case Study Bar) -->
+  <div class="portfolio-bar" role="region" aria-label="Barra de demostración de portafolio">
+    <div class="portfolio-bar-inner">
+      <div style="display:flex;align-items:center;gap:0.65rem;flex-wrap:wrap;">
+        <span class="demo-badge"><span class="demo-dot"></span> PORTFOLIO DEMO • GITHUB</span>
+        <span style="color:var(--text-secondary);">Proyecto real de e-commerce y gestión comercial desarrollado por <strong style="color:var(--text-primary);">Damián</strong></span>
+      </div>
+      <div class="portfolio-actions">
+        <button type="button" class="btn btn-sm btn-gold" id="btnSimulateOrder">⚡ Simular Pedido Demo</button>
+        <button type="button" class="btn btn-sm btn-ghost" id="btnOpenTechModal">🛠️ Arquitectura &amp; Stack</button>
+        <button type="button" class="btn btn-sm btn-ghost" id="btnResetDemo">🔄 Restaurar Datos Demo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Sticky Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#inicio" class="brand">
+        <div class="brand-logo-wrap">
+          <img src="./assets/logo-marcos-y-cuadros.jpg" alt="Logo oficial de Marcos y cuadros" data-fallback="Logo Marcos &amp; Cuadros" />
+        </div>
+        <div class="brand-text">
+          <h1>Marcos y cuadros</h1>
+          <span>Arte que decora tus espacios • Demo Interactiva</span>
+        </div>
+      </a>
+      <nav class="nav-links" aria-label="Navegación principal">
+        <a href="#catalogo" class="btn btn-sm btn-ghost">Cuadros 3D</a>
+        <a href="#promociones" class="btn btn-sm btn-ghost">Promos</a>
+        <a href="#personalizar" class="btn btn-sm btn-primary">Personalizar</a>
+        <a href="#ventas" class="btn btn-sm btn-ghost">Ventas &amp; Excel</a>
+        <a href="#seguridad-legal" class="btn btn-sm btn-ghost">Seguridad &amp; Legal</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="inicio">
+
+    <!-- 1. FIRST VIEWPORT: INTERACTIVE 3D SHOWCASE OF CUSTOM FRAMES -->
+    <section class="section-block" id="catalogo">
+      <div class="section-head">
+        <div>
+          <span class="section-eyebrow">01 • Exhibición Interactiva 3D</span>
+          <h2 class="section-title">Cuadros 100% Personalizados</h2>
+          <p class="section-desc">Mové el cursor sobre cada cuadro para ver su inclinación 3D y el reflejo real del vidrio. Hacé clic en cualquier diseño para ampliarlo o cargarlo directo en tu pedido.</p>
+        </div>
+        <a href="#personalizar" class="btn btn-primary">✨ Subir mi propia imagen</a>
+      </div>
+
+      <div class="gallery-controls">
+        <div class="control-group">
+          <span class="control-label">Iluminación de pared:</span>
+          <button type="button" class="wall-pill active" data-wall="default">Pared Cálida Real</button>
+          <button type="button" class="wall-pill" data-wall="wall-dark">Estudio Oscuro</button>
+          <button type="button" class="wall-pill" data-wall="wall-neon">Luz Neón Roja</button>
+        </div>
+        <div class="control-group" style="margin-left:auto;">
+          <button type="button" class="btn btn-sm btn-ghost" id="btnToggleOrbit">🔄 Escenario Giratorio: ON</button>
+        </div>
+      </div>
+
+      <div class="frames-grid auto-orbit" id="framesGrid">
+        <!-- Frame 1: Goku Disciplina Crea Libertad -->
+        <article class="frame-card" data-tilt>
+          <div>
+            <div class="artwork-stage" data-lightbox="./assets/cuadro-goku-disciplina.jpg" data-title="Disciplina Crea Libertad — Edición Anime" data-caption="Marco negro mate 21×30 cm con vidrio protector e impresión fotográfica de alto contraste.">
+              <img src="./assets/cuadro-goku-disciplina.jpg" alt="Cuadro enmarcado Disciplina Crea Libertad con Goku" />
+              <div class="glass-glare"></div>
+              <span class="frame-tag">21×30 cm • Madera + Vidrio</span>
+            </div>
+            <div class="frame-meta">
+              <h3>Disciplina Crea Libertad</h3>
+              <p>Arte motivacional estilo tinta y rojo carmesí en marco negro con vidrio.</p>
+            </div>
+          </div>
+          <div class="frame-footer">
+            <span class="price-pill">$13.000</span>
+            <button type="button" class="btn btn-sm btn-primary select-design-btn" data-design="Disciplina Crea Libertad (Anime)" data-img="./assets/cuadro-goku-disciplina.jpg">Elegir diseño</button>
+          </div>
+        </article>
+
+        <!-- Frame 2: Paisaje Japonés Monte Fuji & Torii -->
+        <article class="frame-card" data-tilt>
+          <div>
+            <div class="artwork-stage" data-lightbox="./assets/cuadro-paisaje-torii.jpg" data-title="Atardecer en el Portal Torii — Paisaje" data-caption="Impresión fotográfica brillante con colores vibrantes y marco negro de 21×30 cm.">
+              <img src="./assets/cuadro-paisaje-torii.jpg" alt="Cuadro enmarcado de paisaje japonés con portal Torii y montaña al atardecer" />
+              <div class="glass-glare"></div>
+              <span class="frame-tag">21×30 cm • Papel Fotográfico</span>
+            </div>
+            <div class="frame-meta">
+              <h3>Atardecer Portal Torii</h3>
+              <p>Paisaje natural de alta definición con reflejos cálidos y acabado brillante.</p>
+            </div>
+          </div>
+          <div class="frame-footer">
+            <span class="price-pill">$13.000</span>
+            <button type="button" class="btn btn-sm btn-primary select-design-btn" data-design="Atardecer Portal Torii (Paisaje)" data-img="./assets/cuadro-paisaje-torii.jpg">Elegir diseño</button>
+          </div>
+        </article>
+
+        <!-- Frame 3: Naruto & Sasuke Luna Roja -->
+        <article class="frame-card" data-tilt>
+          <div>
+            <div class="artwork-stage" data-lightbox="./assets/cuadro-naruto-sasuke.jpg" data-title="Naruto &amp; Sasuke — Edición Luna Roja" data-caption="Cuadro personalizado de anime enmarcado en madera negra con vidrio y soporte trasero.">
+              <img src="./assets/cuadro-naruto-sasuke.jpg" alt="Cuadro enmarcado de Naruto y Sasuke con luna roja" />
+              <div class="glass-glare"></div>
+              <span class="frame-tag">21×30 cm • Edición Anime</span>
+            </div>
+            <div class="frame-meta">
+              <h3>Naruto &amp; Sasuke — Luna Roja</h3>
+              <p>Ilustración editorial de alto impacto visual lista para colgar o apoyar.</p>
+            </div>
+          </div>
+          <div class="frame-footer">
+            <span class="price-pill">$13.000</span>
+            <button type="button" class="btn btn-sm btn-primary select-design-btn" data-design="Naruto &amp; Sasuke (Luna Roja)" data-img="./assets/cuadro-naruto-sasuke.jpg">Elegir diseño</button>
+          </div>
+        </article>
+
+        <!-- Frame 4: YSY A - El After del After -->
+        <article class="frame-card" data-tilt>
+          <div>
+            <div class="artwork-stage" data-lightbox="./assets/cuadro-ysya-after.jpg" data-title="YSY A — El After del After (Estilo Álbum)" data-caption="Diseño tipo ficha de álbum con lista completa de canciones, código de ondas y fecha de lanzamiento.">
+              <img src="./assets/cuadro-ysya-after.jpg" alt="Cuadro estilo álbum de YSY A El After del After" />
+              <div class="glass-glare"></div>
+              <span class="frame-tag">21×30 cm • Estilo Álbum</span>
+            </div>
+            <div class="frame-meta">
+              <h3>YSY A — El After del After</h3>
+              <p>Formato álbum con tracklist completo, código escaneable y tipografía editorial.</p>
+            </div>
+          </div>
+          <div class="frame-footer">
+            <span class="price-pill">$13.000</span>
+            <button type="button" class="btn btn-sm btn-primary select-design-btn" data-design="YSY A - El After del After" data-img="./assets/cuadro-ysya-after.jpg">Elegir diseño</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 2. ABOUT THE VENTURE (CONCISE SUMMARY) -->
+    <section class="section-block" id="nosotros">
+      <div class="about-grid">
+        <div class="panel-card">
+          <span class="section-eyebrow">02 • Sobre el Emprendimiento</span>
+          <h2 class="section-title" style="font-size:1.5rem;">Arte físico hecho a medida</h2>
+          <p class="section-desc" style="margin-top:0.6rem;">
+            <strong>Marcos y cuadros</strong> es un emprendimiento dedicado a convertir tus álbumes musicales, escenas de anime, ilustraciones y recuerdos favoritos en piezas físicas listas para exhibir. Cada cuadro se arma artesanalmente con terminación limpia y materiales duraderos.
+          </p>
+          <div class="specs-list">
+            <div class="spec-item">
+              <strong>Medida Estándar</strong>
+              <span>21 cm × 30 cm (Formato A4 vertical)</span>
+            </div>
+            <div class="spec-item">
+              <strong>Terminación Premium</strong>
+              <span>Marco de madera negro mate + vidrio frontal</span>
+            </div>
+            <div class="spec-item">
+              <strong>Impresión HD</strong>
+              <span>Papel fotográfico de alta resolución</span>
+            </div>
+            <div class="spec-item">
+              <strong>Doble Soporte</strong>
+              <span>Pie trasero para escritorio + gancho para pared</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card" style="display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <span class="section-eyebrow">Punto de Venta &amp; Contacto</span>
+            <h3 style="font-family:var(--font-display);font-size:1.25rem;margin-bottom:0.5rem;">Instituto Santo Cristo</h3>
+            <p style="font-size:0.88rem;color:var(--text-secondary);">
+              Realizamos entregas directas y presentación presencial en el <strong>Instituto Santo Cristo</strong>, además de pedidos personalizados por encargo con retiro coordinado.
+            </p>
+          </div>
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border-subtle);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;">
+            <div>
+              <span style="font-size:0.75rem;color:var(--text-muted);display:block;">WhatsApp Directo de Pedidos</span>
+              <strong style="font-family:var(--font-mono);font-size:1.1rem;color:var(--accent-gold);">3813689727</strong>
+            </div>
+            <a href="#personalizar" class="btn btn-sm btn-gold">Hacer mi pedido ahora</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. PROMOTIONS & OFFICIAL FLYERS -->
+    <section class="section-block" id="promociones">
+      <div class="section-head">
+        <div>
+          <span class="section-eyebrow">03 • Promociones Vigentes</span>
+          <h2 class="section-title">Promos Oficiales &amp; Flyers</h2>
+          <p class="section-desc">Aprovechá el descuento automático por llevar 2 cuadros combinando los diseños que quieras. Hacé clic en los flyers para verlos en pantalla completa.</p>
+        </div>
+      </div>
+
+      <div class="promos-grid">
+        <!-- Flyer 1: Bad Bunny Un Verano Sin Ti + Pricing -->
+        <article class="flyer-card">
+          <div class="flyer-img-wrap" data-lightbox="./assets/promo-bad-bunny-verano.jpg" data-title="Promo Oficial — Bad Bunny: Un Verano Sin Ti" data-caption="1 Cuadro x $13.000 | ¡PROMO! 2 Cuadros x $20.000 — Pedidos al 3813689727.">
+            <img src="./assets/promo-bad-bunny-verano.jpg" alt="Flyer promocional Bad Bunny Un Verano Sin Ti: 1 cuadro por $13.000 y 2 cuadros por $20.000" />
+          </div>
+          <div class="flyer-body">
+            <div class="promo-highlight-box">
+              <strong style="color:#fff;font-size:0.95rem;">🔥 Elegí el álbum o diseño que quieras</strong>
+              <div class="promo-tiers">
+                <div class="tier-card">
+                  <div class="qty">1 Cuadro</div>
+                  <div class="amount">$13.000</div>
+                  <div class="saving" style="color:var(--text-muted);">Precio unitario</div>
+                </div>
+                <div class="tier-card featured">
+                  <div class="qty" style="color:#ff8a90;">¡PROMO! 2 Cuadros</div>
+                  <div class="amount">$20.000</div>
+                  <div class="saving">Ahorrás $6.000</div>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnApplyPromo2">🎁 Aplicar Promo 2 Cuadros ($20.000)</button>
+          </div>
+        </article>
+
+        <!-- Flyer 2: Marcos & Cuadros Presentación Instituto Santo Cristo -->
+        <article class="flyer-card">
+          <div class="flyer-img-wrap" data-lightbox="./assets/flyer-instituto-santo-cristo.jpg" data-title="Presentación Oficial — Instituto Santo Cristo" data-caption="Cuadros 100% personalizados de álbumes, bandas o diseños a elección.">
+            <img src="./assets/flyer-instituto-santo-cristo.jpg" alt="Flyer oficial de Marcos y Cuadros presentación y venta en el Instituto Santo Cristo" />
+          </div>
+          <div class="flyer-body">
+            <div>
+              <h3 style="font-size:1.05rem;margin-bottom:0.35rem;">Álbumes, Bandas o Diseños a Elección</h3>
+              <p style="font-size:0.86rem;color:var(--text-secondary);">
+                Inspirado en ediciones icónicas como <em>Blond</em>, <em>Naruto</em>, <em>Un Verano Sin Ti</em> o tu propia foto subida desde el celular o PC.
+              </p>
+            </div>
+            <a href="#personalizar" class="btn btn-gold">🎨 Crear mi cuadro personalizado</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 4. INTERACTIVE STUDIO (IMAGE UPLOAD + LIVE FRAME PREVIEW + CHECKOUT) -->
+    <section class="section-block" id="personalizar">
+      <div class="section-head">
+        <div>
+          <span class="section-eyebrow">04 • Estudio en Vivo &amp; Checkout</span>
+          <h2 class="section-title">Personalizá tu Cuadro y Hacé tu Pedido</h2>
+          <p class="section-desc">Subí tu imagen exacta, elegí entre formato <strong>Póster Completo</strong> o <strong>Estilo Álbum Spotify</strong>, y completá tus datos para registrar la venta al instante.</p>
+        </div>
+      </div>
+
+      <div class="studio-grid">
+        <!-- Live Preview Column -->
+        <div class="live-frame-preview-box">
+          <div style="display:flex;gap:0.45rem;margin-bottom:1.1rem;flex-wrap:wrap;justify-content:center;">
+            <button type="button" class="btn btn-sm btn-gold" id="btnModePoster">🖼️ Modo Póster Completo</button>
+            <button type="button" class="btn btn-sm btn-ghost" id="btnModeSpotify">🎵 Modo Álbum Spotify</button>
+          </div>
+
+          <div class="physical-frame" id="previewFrameCard">
+            <div class="physical-frame-inner mode-poster" id="frameInner">
+              <img id="previewPosterImg" class="poster-full-img" src="./assets/cuadro-goku-disciplina.jpg" alt="Vista previa del cuadro personalizado" />
+
+              <!-- Spotify Album Template Preview -->
+              <div class="spotify-layout">
+                <img id="previewSpotifyImg" class="spotify-cover" src="./assets/cuadro-ysya-after.jpg" alt="Portada de álbum personalizada" />
+                <div>
+                  <div class="spotify-wave" aria-hidden="true">
+                    <span style="height:6px;"></span><span style="height:12px;"></span><span style="height:8px;"></span>
+                    <span style="height:14px;"></span><span style="height:5px;"></span><span style="height:11px;"></span>
+                    <span style="height:9px;"></span><span style="height:13px;"></span><span style="height:6px;"></span>
+                    <span style="height:10px;"></span><span style="height:7px;"></span><span style="height:12px;"></span>
+                  </div>
+                  <div class="spotify-meta-row">
+                    <div class="spotify-tracks" id="previewTracksText">
+                      1. TODA LA VIDA<br>2. LUGARES QUE LLEGO<br>3. + QUE LA DROGA<br>4. NO DAS MÁS<br>5. COPENHAGUE
+                    </div>
+                    <div class="spotify-title-block">
+                      <div class="spotify-artist" id="previewArtistText">YSY A</div>
+                      <div class="spotify-album" id="previewAlbumText">EL AFTER DEL AFTER</div>
+                      <div class="spotify-date" id="previewDateText">11/11/2023</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <span style="font-family:var(--font-mono);font-size:0.74rem;color:var(--text-muted);margin-top:0.9rem;">
+            Vista previa real • Marco 21×30 cm con vidrio
+          </span>
+        </div>
+
+        <!-- Order & Upload Form Column -->
+        <form class="panel-card" id="orderForm" novalidate>
+          <div class="form-grid">
+            <div class="field full">
+              <label for="imageUploadInput">Subí tu imagen exacta (JPG, PNG o WEBP • Máx. 8 MB)</label>
+              <label class="upload-dropzone" for="imageUploadInput">
+                <strong style="color:var(--accent-gold);display:block;font-size:0.92rem;">📁 Hacé clic acá para elegir tu imagen</strong>
+                <span id="uploadFileName" style="font-size:0.8rem;color:var(--text-secondary);">Ningún archivo seleccionado (usando diseño del catálogo)</span>
+              </label>
+              <input type="file" id="imageUploadInput" accept="image/jpeg,image/png,image/webp" style="display:none;" />
+            </div>
+
+            <!-- Extra Spotify Mode Fields (Hidden unless Spotify mode active) -->
+            <div class="field spotify-only" style="display:none;">
+              <label for="inputArtist">Artista / Banda</label>
+              <input type="text" id="inputArtist" class="input" maxlength="40" value="YSY A" placeholder="Ej: Bad Bunny" />
+            </div>
+            <div class="field spotify-only" style="display:none;">
+              <label for="inputAlbum">Nombre del Álbum / Canción</label>
+              <input type="text" id="inputAlbum" class="input" maxlength="45" value="EL AFTER DEL AFTER" placeholder="Ej: Un Verano Sin Ti" />
+            </div>
+            <div class="field full spotify-only" style="display:none;">
+              <label for="inputTracks">Lista de canciones (separadas por coma)</label>
+              <input type="text" id="inputTracks" class="input" maxlength="140" value="1. Toda la vida, 2. Lugares que llego, 3. + Que la droga, 4. No das más, 5. Copenhague" />
+            </div>
+
+            <div class="field">
+              <label for="inputDesignName">Nombre del Diseño / Pedido</label>
+              <input type="text" id="inputDesignName" class="input" maxlength="60" value="Disciplina Crea Libertad (Anime)" required />
+            </div>
+
+            <div class="field">
+              <label for="inputQuantity">Cantidad (Promo 2 × $20.000 automática)</label>
+              <select id="inputQuantity" class="select">
+                <option value="1">1 Cuadro — $13.000</option>
+                <option value="2">2 Cuadros — $20.000 (¡PROMO!)</option>
+                <option value="3">3 Cuadros — $33.000 (1 Promo + 1 Unit.)</option>
+                <option value="4">4 Cuadros — $40.000 (2 Promos)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="inputCustomerName">Tu Nombre y Apellido</label>
+              <input type="text" id="inputCustomerName" class="input" maxlength="60" placeholder="Ej: Valentina Gómez" required />
+            </div>
+
+            <div class="field">
+              <label for="inputContact">WhatsApp o Curso (Instituto Santo Cristo)</label>
+              <input type="text" id="inputContact" class="input" maxlength="50" placeholder="Ej: 381-5551234 / 5° A" required />
+            </div>
+
+            <div class="field full">
+              <label for="inputPaymentMethod">Medio de Pago</label>
+              <select id="inputPaymentMethod" class="select">
+                <option value="Transferencia (Alias: Joaco.chocobar)">Transferencia Bancaria / Billetera Virtual (Alias: Joaco.chocobar)</option>
+                <option value="Efectivo">Efectivo (Entrega presencial / Instituto Santo Cristo)</option>
+              </select>
+
+              <div class="payment-box" id="transferInfoBox">
+                <div style="font-size:0.83rem;color:var(--text-primary);font-weight:600;">
+                  💸 Datos para Transferencia Directa:
+                </div>
+                <div class="alias-row">
+                  <div>
+                    <span style="font-size:0.72rem;color:var(--text-muted);display:block;">Alias oficial</span>
+                    <span class="alias-code" id="aliasValue">Joaco.chocobar</span>
+                  </div>
+                  <button type="button" class="btn btn-sm btn-gold" id="btnCopyAlias">📋 Copiar Alias</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="total-summary-bar">
+            <div>
+              <span style="font-size:0.78rem;color:var(--text-secondary);display:block;" id="promoStatusLabel">Precio regular (1 cuadro)</span>
+              <strong style="font-family:var(--font-mono);font-size:1.45rem;color:var(--accent-gold);" id="totalAmountDisplay">$13.000</strong>
+            </div>
+            <button type="submit" class="btn btn-primary">✅ Registrar Pedido</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 5. SALES LEDGER & EXCEL INTEGRATION -->
+    <section class="section-block" id="ventas">
+      <div class="section-head">
+        <div>
+          <span class="section-eyebrow">05 • Control Comercial &amp; Excel</span>
+          <h2 class="section-title">Registro de Ventas y Conexión con Excel</h2>
+          <p class="section-desc">Cada pedido confirmado queda guardado automáticamente en el historial y podés descargarlo en un clic como planilla compatible con <strong>Microsoft Excel</strong> y <strong>Google Sheets</strong>.</p>
+        </div>
+        <div style="display:flex;gap:0.55rem;flex-wrap:wrap;">
+          <button type="button" class="btn btn-gold" id="btnExportExcel">📥 Descargar Planilla Excel (.CSV)</button>
+          <button type="button" class="btn btn-ghost" id="btnToggleSheetsGuide">🔗 Conectar Google Sheets en vivo</button>
+        </div>
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <span>Ingresos Totales</span>
+          <strong id="kpiRevenue">$0</strong>
+        </div>
+        <div class="kpi-card">
+          <span>Cuadros Vendidos</span>
+          <strong id="kpiFrames">0</strong>
+        </div>
+        <div class="kpi-card">
+          <span>Pedidos Registrados</span>
+          <strong id="kpiOrders">0</strong>
+        </div>
+        <div class="kpi-card">
+          <span>Ahorro Promos Aplicadas</span>
+          <strong id="kpiSavings" style="color:var(--accent-emerald);">$0</strong>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID Pedido</th>
+              <th>Tipo</th>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Contacto / Curso</th>
+              <th>Diseño</th>
+              <th>Cant.</th>
+              <th>Medio de Pago</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="salesTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Google Sheets / Excel Live Sync Guide -->
+      <div class="panel-card" id="sheetsGuideBox" style="display:none;margin-top:1.25rem;">
+        <h3 style="font-size:1.05rem;margin-bottom:0.45rem;">📊 Cómo sincronizar automáticamente con Google Sheets / Excel en la nube</h3>
+        <p style="font-size:0.86rem;color:var(--text-secondary);margin-bottom:0.75rem;">
+          Para que las ventas se guarden en una hoja de cálculo compartida sin pagar servidores: creá una hoja en <strong>Google Sheets</strong>, abrí <em>Extensiones → Apps Script</em>, pegá este código y publicalo como <strong>Aplicación Web</strong>:
+        </p>
+        <pre style="background:#0a0a0d;border:1px solid var(--border-strong);padding:0.9rem;border-radius:8px;overflow-x:auto;font-family:var(--font-mono);font-size:0.78rem;color:#d6d3cb;">function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = JSON.parse(e.postData.contents);
+  sheet.appendRow([new Date(), data.id, data.cliente, data.contacto, data.diseno, data.cantidad, data.pago, data.total]);
+  return ContentService.createTextOutput(JSON.stringify({ status: "ok" })).setMimeType(ContentService.MimeType.JSON);
+}</pre>
+      </div>
+    </section>
+
+    <!-- 6. SECURITY HARDENING, LEGAL FRAMEWORKS & BUG GOVERNANCE -->
+    <section class="section-block" id="seguridad-legal">
+      <div class="section-head">
+        <div>
+          <span class="section-eyebrow">06 • Ingeniería, Cumplimiento &amp; Calidad</span>
+          <h2 class="section-title">Seguridad, Marcos Legales y Control de Errores</h2>
+          <p class="section-desc">Arquitectura defensiva lista para producción: sanitización contra inyección XSS, validación de archivos subidos, cumplimiento normativo argentino y autodiagnóstico de fallos.</p>
+        </div>
+      </div>
+
+      <div class="gov-grid">
+        <!-- Card A: Security Corrections -->
+        <article class="panel-card">
+          <span class="section-eyebrow">Seguridad Web</span>
+          <h3 style="font-size:1.1rem;margin-bottom:0.65rem;">Blindaje y Correcciones Aplicadas</h3>
+          <ul class="diag-list">
+            <li><span>Sanitización anti-XSS (<code class="inline-code">escapeHTML</code>)</span><span class="status-ok">ACTIVO</span></li>
+            <li><span>Content Security Policy (CSP) restrictiva</span><span class="status-ok">ACTIVO</span></li>
+            <li><span>Validación MIME + firma binaria de imágenes</span><span class="status-ok">ACTIVO</span></li>
+            <li><span>Límite de carga (8 MB) y control anti-spam</span><span class="status-ok">ACTIVO</span></li>
+          </ul>
+          <p style="font-size:0.82rem;color:var(--text-secondary);">
+            Ningún texto ingresado por el usuario se inyecta como HTML sin escapar, y las imágenes subidas se verifican antes de renderizarse en memoria local.
+          </p>
+        </article>
+
+        <!-- Card B: Legal Frameworks -->
+        <article class="panel-card">
+          <span class="section-eyebrow">Marcos Legales</span>
+          <h3 style="font-size:1.1rem;margin-bottom:0.65rem;">Normativa y Condiciones</h3>
+          <div class="tabs-bar" role="tablist">
+            <button type="button" class="tab-btn active" data-tab="legal-tyc">Términos</button>
+            <button type="button" class="tab-btn" data-tab="legal-datos">Ley 25.326</button>
+            <button type="button" class="tab-btn" data-tab="legal-ip">Propiedad Intelectual</button>
+            <button type="button" class="tab-btn" data-tab="legal-consumidor">Ley 24.240</button>
+          </div>
+          <div class="tab-panel active" id="legal-tyc">
+            <strong>Términos de Encargo:</strong> Los cuadros personalizados de 21×30 cm se producen a pedido tras confirmar diseño y seña/pago por efectivo o transferencia al alias <code class="inline-code">Joaco.chocobar</code>.
+          </div>
+          <div class="tab-panel" id="legal-datos">
+            <strong>Protección de Datos Personales (Ley 25.326 - Argentina):</strong> El nombre y teléfono/curso del comprador se utilizan exclusivamente para coordinar la entrega del pedido y no se ceden a terceros.
+          </div>
+          <div class="tab-panel" id="legal-ip">
+            <strong>Derechos de Imagen:</strong> El cliente declara contar con autorización para imprimir las fotografías o artes personales que sube al estudio de personalización.
+          </div>
+          <div class="tab-panel" id="legal-consumidor">
+            <strong>Defensa del Consumidor (Ley 24.240):</strong> Se garantizan precios transparentes ($13.000 unitario / $20.000 promo por 2) y reposición sin cargo ante defectos de fabricación o vidrio dañado en entrega.
+          </div>
+        </article>
+
+        <!-- Card C: Bug Anticipation & Error Reporting -->
+        <article class="panel-card">
+          <span class="section-eyebrow">Anticipación de Bugs</span>
+          <h3 style="font-size:1.1rem;margin-bottom:0.65rem;">Diagnóstico y Reporte de Errores</h3>
+          <ul class="diag-list" id="healthDiagnosticsList">
+            <li><span>Almacenamiento Local (<code class="inline-code">localStorage</code>)</span><span class="status-ok" id="diagStorage">VERIFICANDO...</span></li>
+            <li><span>API de Lectura de Archivos (<code class="inline-code">FileReader</code>)</span><span class="status-ok" id="diagFileReader">VERIFICANDO...</span></li>
+            <li><span>Aceleración CSS 3D &amp; Viewport</span><span class="status-ok" id="diagViewport">VERIFICANDO...</span></li>
+          </ul>
+          <form id="bugReportForm" style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.75rem;">
+            <select id="bugCategory" class="select" style="padding:0.5rem 0.7rem;font-size:0.82rem;">
+              <option value="Visual / Responsive">Error visual o de pantalla</option>
+              <option value="Subida de Imagen">Problema al subir imagen</option>
+              <option value="Cálculo / Excel">Error en cálculo de promo o Excel</option>
+              <option value="Sugerencia">Sugerencia de mejora</option>
+            </select>
+            <textarea id="bugDescription" class="textarea" rows="2" maxlength="300" placeholder="Describí brevemente el error o comportamiento inesperado..." required style="font-size:0.82rem;"></textarea>
+            <div style="display:flex;gap:0.5rem;">
+              <button type="submit" class="btn btn-sm btn-primary" style="flex:1;">🐞 Reportar Error</button>
+              <button type="button" class="btn btn-sm btn-ghost" id="btnExportBugLog">📄 Log JSON</button>
+            </div>
+          </form>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p><strong>Marcos y cuadros</strong> — Arte que decora tus espacios • Presentación y venta en el <strong>Instituto Santo Cristo</strong> (Pedidos: 3813689727)</p>
+    <p style="margin-top:0.35rem;font-size:0.76rem;">GitHub Portfolio Demo desarrollada por Damián • HTML5, CSS3 3D Transforms &amp; Vanilla JavaScript ES6+</p>
+  </footer>
+
+  <!-- Lightbox Modal for Exact High-Res Images -->
+  <div class="modal-backdrop" id="lightboxModal" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
+    <div class="modal-card" style="max-width:540px;text-align:center;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;">
+        <h3 id="lightboxTitle" style="font-family:var(--font-display);font-size:1.1rem;">Vista Detallada</h3>
+        <button type="button" class="btn btn-sm btn-ghost" id="btnCloseLightbox">✕ Cerrar</button>
+      </div>
+      <img id="lightboxImg" src="" alt="Vista ampliada" style="max-height:65vh;width:auto;max-width:100%;border-radius:10px;border:1px solid var(--border-strong);" />
+      <p id="lightboxCaption" style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.75rem;"></p>
+    </div>
+  </div>
+
+  <!-- Technical Portfolio Architecture Modal -->
+  <div class="modal-backdrop" id="techModal" role="dialog" aria-modal="true" aria-labelledby="techModalTitle">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 id="techModalTitle" style="font-family:var(--font-display);font-size:1.25rem;">Arquitectura del Proyecto — GitHub Portfolio</h3>
+        <button type="button" class="btn btn-sm btn-ghost" id="btnCloseTechModal">✕ Cerrar</button>
+      </div>
+      <p style="font-size:0.9rem;color:var(--text-secondary);margin-bottom:1rem;">
+        Esta aplicación fue diseñada como una solución <strong>zero-dependency</strong> lista para desplegar en <strong>GitHub Pages</strong> sin backend costoso, resolviendo necesidades reales de catálogo, personalización y registro contable para un emprendimiento local.
+      </p>
+      <div class="specs-list" style="margin-bottom:1rem;">
+        <div class="spec-item">
+          <strong>Frontend &amp; 3D UI</strong>
+          <span>HTML5 semántico, CSS Grid/Flexbox, Transformaciones 3D interactivas con reflejo especular y microinteracciones táctiles.</span>
+        </div>
+        <div class="spec-item">
+          <strong>Motor de Personalización</strong>
+          <span>API <code class="inline-code">FileReader</code> con validación de cabecera binaria (Magic Bytes) y doble plantilla (Póster / Spotify).</span>
+        </div>
+        <div class="spec-item">
+          <strong>Persistencia &amp; Excel</strong>
+          <span>Estado persistente en <code class="inline-code">localStorage</code> + generador <code class="inline-code">.CSV</code> con BOM UTF-8 compatible con Excel y webhook Google Apps Script.</span>
+        </div>
+        <div class="spec-item">
+          <strong>Seguridad &amp; QA</strong>
+          <span>Escapado estricto anti-XSS, política CSP, marco legal Ley 25.326 / 24.240 y autodiagnóstico de errores en cliente.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toastEl" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // --- 1. Security: Strict HTML Escaping ---
+      function escapeHTML(str) {
+        return String(str ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      // --- 2. Toast Notification Helper ---
+      const toastEl = document.getElementById('toastEl');
+      let toastTimer = null;
+      function showToast(message) {
+        toastEl.textContent = message;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3400);
+      }
+
+      // --- 3. Button Ripple Micro-Interactions ---
+      document.addEventListener('pointerdown', function (e) {
+        const btn = e.target.closest('.btn');
+        if (!btn) return;
+        const rect = btn.getBoundingClientRect();
+        const circle = document.createElement('span');
+        const diameter = Math.max(rect.width, rect.height);
+        circle.style.width = circle.style.height = diameter + 'px';
+        circle.style.left = (e.clientX - rect.left - diameter / 2) + 'px';
+        circle.style.top = (e.clientY - rect.top - diameter / 2) + 'px';
+        circle.className = 'ripple-wave';
+        const old = btn.querySelector('.ripple-wave');
+        if (old) old.remove();
+        btn.appendChild(circle);
+      });
+
+      // --- 4. Graceful Fallback if Assets Folder is Missing ---
+      document.querySelectorAll('img').forEach((img) => {
+        img.addEventListener('error', function () {
+          if (this.dataset.fallbackApplied) return;
+          this.dataset.fallbackApplied = '1';
+          const label = encodeURIComponent(this.alt || 'Marcos y cuadros');
+          this.src = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800"><rect width="600" height="800" fill="%2316161d"/><rect x="36" y="36" width="528" height="728" fill="none" stroke="%23c8a96e" stroke-width="4"/><text x="300" y="385" fill="%23f5f4f0" font-family="sans-serif" font-size="22" text-anchor="middle">${label}</text><text x="300" y="425" fill="%23c8a96e" font-family="monospace" font-size="15" text-anchor="middle">Verificá la carpeta ./assets/</text></svg>`;
+        });
+      });
+
+      // --- 5. Interactive 3D Tilt & Wall Lighting ---
+      const framesGrid = document.getElementById('framesGrid');
+      const btnToggleOrbit = document.getElementById('btnToggleOrbit');
+      let orbitActive = true;
+
+      btnToggleOrbit.addEventListener('click', () => {
+        orbitActive = !orbitActive;
+        framesGrid.classList.toggle('auto-orbit', orbitActive);
+        btnToggleOrbit.textContent = orbitActive ? '🔄 Escenario Giratorio: ON' : '⏸️ Escenario Giratorio: OFF';
+      });
+
+      document.querySelectorAll('.wall-pill').forEach((pill) => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('.wall-pill').forEach((p) => p.classList.remove('active'));
+          pill.classList.add('active');
+          document.body.classList.remove('wall-dark', 'wall-neon');
+          const mode = pill.dataset.wall;
+          if (mode !== 'default') document.body.classList.add(mode);
+        });
+      });
+
+      document.querySelectorAll('[data-tilt]').forEach((card) => {
+        const glare = card.querySelector('.glass-glare');
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          const rotateY = (x - 0.5) * 18;
+          const rotateX = (0.5 - y) * 18;
+          card.style.animation = 'none';
+          card.style.transform = `rotateX(${rotateX.toFixed(1)}deg) rotateY(${rotateY.toFixed(1)}deg) translateY(-4px)`;
+          if (glare) {
+            glare.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,0.34), transparent 62%)`;
+          }
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+          if (orbitActive) card.style.animation = '';
+        });
+      });
+
+      // --- 6. Lightbox Modal ---
+      const lightboxModal = document.getElementById('lightboxModal');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const lightboxTitle = document.getElementById('lightboxTitle');
+      const lightboxCaption = document.getElementById('lightboxCaption');
+
+      document.querySelectorAll('[data-lightbox]').forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+          lightboxImg.src = trigger.dataset.lightbox;
+          lightboxTitle.textContent = trigger.dataset.title || 'Vista Detallada';
+          lightboxCaption.textContent = trigger.dataset.caption || '';
+          lightboxModal.classList.add('open');
+        });
+      });
+
+      document.getElementById('btnCloseLightbox').addEventListener('click', () => lightboxModal.classList.remove('open'));
+      lightboxModal.addEventListener('click', (e) => {
+        if (e.target === lightboxModal) lightboxModal.classList.remove('open');
+      });
+
+      // Tech Architecture Modal
+      const techModal = document.getElementById('techModal');
+      document.getElementById('btnOpenTechModal').addEventListener('click', () => techModal.classList.add('open'));
+      document.getElementById('btnCloseTechModal').addEventListener('click', () => techModal.classList.remove('open'));
+      techModal.addEventListener('click', (e) => {
+        if (e.target === techModal) techModal.classList.remove('open');
+      });
+
+      // --- 7. Customizer Studio & Pricing Engine ---
+      const frameInner = document.getElementById('frameInner');
+      const btnModePoster = document.getElementById('btnModePoster');
+      const btnModeSpotify = document.getElementById('btnModeSpotify');
+      const spotifyFields = document.querySelectorAll('.spotify-only');
+      const previewPosterImg = document.getElementById('previewPosterImg');
+      const previewSpotifyImg = document.getElementById('previewSpotifyImg');
+      const inputDesignName = document.getElementById('inputDesignName');
+      const inputQuantity = document.getElementById('inputQuantity');
+      const totalAmountDisplay = document.getElementById('totalAmountDisplay');
+      const promoStatusLabel = document.getElementById('promoStatusLabel');
+
+      function setFrameMode(mode) {
+        if (mode === 'spotify') {
+          frameInner.classList.remove('mode-poster');
+          frameInner.classList.add('mode-spotify');
+          btnModeSpotify.className = 'btn btn-sm btn-gold';
+          btnModePoster.className = 'btn btn-sm btn-ghost';
+          spotifyFields.forEach((el) => (el.style.display = 'flex'));
+        } else {
+          frameInner.classList.remove('mode-spotify');
+          frameInner.classList.add('mode-poster');
+          btnModePoster.className = 'btn btn-sm btn-gold';
+          btnModeSpotify.className = 'btn btn-sm btn-ghost';
+          spotifyFields.forEach((el) => (el.style.display = 'none'));
+        }
+      }
+
+      btnModePoster.addEventListener('click', () => setFrameMode('poster'));
+      btnModeSpotify.addEventListener('click', () => setFrameMode('spotify'));
+
+      // Live Spotify Text Sync
+      document.getElementById('inputArtist').addEventListener('input', (e) => {
+        document.getElementById('previewArtistText').textContent = e.target.value.trim() || 'ARTISTA';
+      });
+      document.getElementById('inputAlbum').addEventListener('input', (e) => {
+        document.getElementById('previewAlbumText').textContent = e.target.value.trim() || 'ÁLBUM';
+      });
+      document.getElementById('inputTracks').addEventListener('input', (e) => {
+        const items = e.target.value.split(',').map((t) => t.trim()).filter(Boolean).slice(0, 6);
+        document.getElementById('previewTracksText').innerHTML = items.map((t) => escapeHTML(t)).join('<br>');
+      });
+
+      // Select Catalog Design into Studio
+      document.querySelectorAll('.select-design-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const design = btn.dataset.design;
+          const imgPath = btn.dataset.img;
+          inputDesignName.value = design;
+          previewPosterImg.src = imgPath;
+          previewSpotifyImg.src = imgPath;
+          if (design.includes('YSY A')) setFrameMode('spotify');
+          else setFrameMode('poster');
+          document.getElementById('personalizar').scrollIntoView({ behavior: 'smooth' });
+          showToast(`Diseño "${design}" cargado en el estudio`);
+        });
+      });
+
+      // Promo Calculation: 1 = $13.000, 2 = $20.000
+      function calculatePricing(qty) {
+        const pairs = Math.floor(qty / 2);
+        const singles = qty % 2;
+        const total = pairs * 20000 + singles * 13000;
+        const regularTotal = qty * 13000;
+        const savings = regularTotal - total;
+        return { total, savings, pairs };
+      }
+
+      function updatePricingUI() {
+        const qty = parseInt(inputQuantity.value, 10) || 1;
+        const { total, savings, pairs } = calculatePricing(qty);
+        totalAmountDisplay.textContent = '$' + total.toLocaleString('es-AR');
+        if (savings > 0) {
+          promoStatusLabel.textContent = `¡PROMO aplicada! (${pairs} combo${pairs > 1 ? 's' : ''} × $20.000 • Ahorrás $${savings.toLocaleString('es-AR')})`;
+          promoStatusLabel.style.color = '#10b981';
+        } else {
+          promoStatusLabel.textContent = 'Precio regular (1 cuadro × $13.000)';
+          promoStatusLabel.style.color = 'var(--text-secondary)';
+        }
+      }
+
+      inputQuantity.addEventListener('change', updatePricingUI);
+
+      document.getElementById('btnApplyPromo2').addEventListener('click', () => {
+        inputQuantity.value = '2';
+        updatePricingUI();
+        document.getElementById('personalizar').scrollIntoView({ behavior: 'smooth' });
+        showToast('¡Promo 2 Cuadros × $20.000 aplicada!');
+      });
+
+      // Secure Image Upload Validation (MIME + Magic Bytes + Max Size)
+      const imageUploadInput = document.getElementById('imageUploadInput');
+      const uploadFileName = document.getElementById('uploadFileName');
+
+      imageUploadInput.addEventListener('change', function () {
+        const file = this.files && this.files[0];
+        if (!file) return;
+
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+          showToast('Error: Solo se permiten imágenes JPG, PNG o WEBP.');
+          this.value = '';
+          return;
+        }
+        if (file.size > 8 * 1024 * 1024) {
+          showToast('Error: La imagen supera el límite seguro de 8 MB.');
+          this.value = '';
+          return;
+        }
+
+        // Validate Magic Bytes before rendering
+        const headerReader = new FileReader();
+        headerReader.onload = function (evt) {
+          const arr = new Uint8Array(evt.target.result).subarray(0, 4);
+          let hex = '';
+          for (let i = 0; i < arr.length; i++) hex += arr[i].toString(16).padStart(2, '0');
+          const isValidMagic =
+            hex.startsWith('ffd8ff') || // JPEG
+            hex === '89504e47' || // PNG
+            hex === '52494646'; // WEBP (RIFF)
+
+          if (!isValidMagic) {
+            showToast('Seguridad: El archivo no coincide con una imagen válida.');
+            imageUploadInput.value = '';
+            return;
+          }
+
+          const dataReader = new FileReader();
+          dataReader.onload = function (loadEvent) {
+            previewPosterImg.src = loadEvent.target.result;
+            previewSpotifyImg.src = loadEvent.target.result;
+            uploadFileName.textContent = `Archivo cargado: ${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
+            inputDesignName.value = `Personalizado (${file.name.slice(0, 28)})`;
+            showToast('Imagen verificada y cargada en el marco 3D');
+          };
+          dataReader.readAsDataURL(file);
+        };
+        headerReader.readAsArrayBuffer(file.slice(0, 4));
+      });
+
+      // Payment Method Toggle & Alias Copy
+      const inputPaymentMethod = document.getElementById('inputPaymentMethod');
+      const transferInfoBox = document.getElementById('transferInfoBox');
+      inputPaymentMethod.addEventListener('change', () => {
+        transferInfoBox.style.display = inputPaymentMethod.value.includes('Transferencia') ? 'block' : 'none';
+      });
+
+      document.getElementById('btnCopyAlias').addEventListener('click', async () => {
+        const alias = 'Joaco.chocobar';
+        try {
+          await navigator.clipboard.writeText(alias);
+          showToast('Alias "Joaco.chocobar" copiado al portapapeles');
+        } catch (_) {
+          showToast('Alias para transferir: Joaco.chocobar');
+        }
+      });
+
+      // --- 8. Sales Ledger (LocalStorage + Demo Seed + CSV/Excel Export) ---
+      const STORAGE_KEY = 'marcos_y_cuadros_sales_v1';
+      const DEFAULT_DEMO_SALES = [
+        {
+          id: 'MC-1001',
+          isDemo: true,
+          fecha: '2026-11-06',
+          cliente: 'Valentina R. (Ejemplo)',
+          contacto: 'Instituto Santo Cristo',
+          diseno: 'Bad Bunny - Un Verano Sin Ti + YSY A',
+          cantidad: 2,
+          pago: 'Transferencia (Alias: Joaco.chocobar)',
+          total: 20000,
+          ahorro: 6000
+        },
+        {
+          id: 'MC-1002',
+          isDemo: true,
+          fecha: '2026-11-06',
+          cliente: 'Mateo L. (Ejemplo)',
+          contacto: '381-5550192',
+          diseno: 'Disciplina Crea Libertad (Anime)',
+          cantidad: 1,
+          pago: 'Efectivo',
+          total: 13000,
+          ahorro: 0
+        },
+        {
+          id: 'MC-1003',
+          isDemo: true,
+          fecha: '2026-11-07',
+          cliente: 'Camila S. (Ejemplo)',
+          contacto: '5° Año - Santo Cristo',
+          diseno: 'Naruto & Sasuke + Atardecer Portal Torii',
+          cantidad: 2,
+          pago: 'Transferencia (Alias: Joaco.chocobar)',
+          total: 20000,
+          ahorro: 6000
+        }
+      ];
+
+      function loadSales() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DEMO_SALES));
+            return [...DEFAULT_DEMO_SALES];
+          }
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [...DEFAULT_DEMO_SALES];
+        } catch (_) {
+          return [...DEFAULT_DEMO_SALES];
+        }
+      }
+
+      function saveSales(list) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        } catch (_) {
+          showToast('Aviso: No se pudo guardar en almacenamiento local.');
+        }
+      }
+
+      let salesList = loadSales();
+
+      function renderSales() {
+        const tbody = document.getElementById('salesTableBody');
+        let totalRev = 0;
+        let totalFrames = 0;
+        let totalSavings = 0;
+
+        tbody.innerHTML = salesList
+          .map((item) => {
+            totalRev += Number(item.total) || 0;
+            totalFrames += Number(item.cantidad) || 0;
+            totalSavings += Number(item.ahorro) || 0;
+            const badge = item.isDemo
+              ? '<span class="badge-demo">DEMO</span>'
+              : '<span class="badge-real">NUEVO</span>';
+            return `<tr>
+              <td style="font-family:var(--font-mono);font-weight:700;">${escapeHTML(item.id)}</td>
+              <td>${badge}</td>
+              <td>${escapeHTML(item.fecha)}</td>
+              <td><strong>${escapeHTML(item.cliente)}</strong></td>
+              <td>${escapeHTML(item.contacto)}</td>
+              <td>${escapeHTML(item.diseno)}</td>
+              <td style="font-family:var(--font-mono);">${escapeHTML(item.cantidad)}</td>
+              <td>${escapeHTML(item.pago)}</td>
+              <td style="font-family:var(--font-mono);color:var(--accent-gold);font-weight:700;">$${Number(item.total).toLocaleString('es-AR')}</td>
+            </tr>`;
+          })
+          .join('');
+
+        document.getElementById('kpiRevenue').textContent = '$' + totalRev.toLocaleString('es-AR');
+        document.getElementById('kpiFrames').textContent = totalFrames;
+        document.getElementById('kpiOrders').textContent = salesList.length;
+        document.getElementById('kpiSavings').textContent = '$' + totalSavings.toLocaleString('es-AR');
+      }
+
+      renderSales();
+
+      // Order Form Submission with Rate Limiting
+      let lastSubmitTime = 0;
+      document.getElementById('orderForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const now = Date.now();
+        if (now - lastSubmitTime < 1500) {
+          showToast('Por favor esperá un instante antes de reenviar.');
+          return;
+        }
+
+        const cliente = document.getElementById('inputCustomerName').value.trim();
+        const contacto = document.getElementById('inputContact').value.trim();
+        const diseno = inputDesignName.value.trim();
+        const cantidad = parseInt(inputQuantity.value, 10) || 1;
+        const pago = inputPaymentMethod.value;
+
+        if (!cliente || !contacto || !diseno) {
+          showToast('Completá tu nombre, contacto y nombre del diseño.');
+          return;
+        }
+
+        lastSubmitTime = now;
+        const { total, savings } = calculatePricing(cantidad);
+        const newOrder = {
+          id: 'MC-' + (1000 + salesList.length + 1),
+          isDemo: false,
+          fecha: new Date().toISOString().slice(0, 10),
+          cliente,
+          contacto,
+          diseno,
+          cantidad,
+          pago,
+          total,
+          ahorro: savings
+        };
+
+        salesList.unshift(newOrder);
+        saveSales(salesList);
+        renderSales();
+        document.getElementById('inputCustomerName').value = '';
+        document.getElementById('inputContact').value = '';
+        document.getElementById('ventas').scrollIntoView({ behavior: 'smooth' });
+        showToast(`¡Pedido ${newOrder.id} registrado por $${total.toLocaleString('es-AR')}!`);
+      });
+
+      // Portfolio Bar Quick Actions
+      document.getElementById('btnSimulateOrder').addEventListener('click', () => {
+        document.getElementById('inputCustomerName').value = 'Lucas Fernández (Test)';
+        document.getElementById('inputContact').value = '381-4429810';
+        inputDesignName.value = 'YSY A - El After del After';
+        inputQuantity.value = '2';
+        inputPaymentMethod.value = 'Transferencia (Alias: Joaco.chocobar)';
+        transferInfoBox.style.display = 'block';
+        updatePricingUI();
+        document.getElementById('personalizar').scrollIntoView({ behavior: 'smooth' });
+        showToast('Formulario autocompletado con pedido de prueba (Promo 2×$20.000)');
+      });
+
+      document.getElementById('btnResetDemo').addEventListener('click', () => {
+        salesList = [...DEFAULT_DEMO_SALES];
+        saveSales(salesList);
+        renderSales();
+        showToast('Datos de demostración restaurados correctamente');
+      });
+
+      // Export Sales to Excel-compatible UTF-8 BOM CSV
+      document.getElementById('btnExportExcel').addEventListener('click', () => {
+        const headers = ['ID Pedido', 'Tipo', 'Fecha', 'Cliente', 'Contacto', 'Diseno', 'Cantidad', 'Medio de Pago', 'Total ARS', 'Ahorro Promo ARS'];
+        const rows = salesList.map((s) => [
+          s.id,
+          s.isDemo ? 'DEMO' : 'REAL',
+          s.fecha,
+          `"${String(s.cliente).replace(/"/g, '""')}"`,
+          `"${String(s.contacto).replace(/"/g, '""')}"`,
+          `"${String(s.diseno).replace(/"/g, '""')}"`,
+          s.cantidad,
+          `"${String(s.pago).replace(/"/g, '""')}"`,
+          s.total,
+          s.ahorro || 0
+        ]);
+
+        const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map((r) => r.join(';'))].join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Ventas_Marcos_y_Cuadros_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        showToast('Planilla Excel (.CSV) descargada correctamente');
+      });
+
+      document.getElementById('btnToggleSheetsGuide').addEventListener('click', () => {
+        const box = document.getElementById('sheetsGuideBox');
+        box.style.display = box.style.display === 'none' ? 'block' : 'none';
+      });
+
+      // --- 9. Legal Tabs & Bug Diagnostics / Reporter ---
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+          document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+          btn.classList.add('active');
+          const target = document.getElementById(btn.dataset.tab);
+          if (target) target.classList.add('active');
+        });
+      });
+
+      // Run Client Health Diagnostics
+      (function runHealthChecks() {
+        const storageOk = (() => {
+          try {
+            localStorage.setItem('__mc_ping__', '1');
+            localStorage.removeItem('__mc_ping__');
+            return true;
+          } catch (_) {
+            return false;
+          }
+        })();
+        document.getElementById('diagStorage').textContent = storageOk ? 'OPERATIVO' : 'MODO MEMORIA';
+        document.getElementById('diagFileReader').textContent = typeof FileReader !== 'undefined' ? 'SOPORTADO' : 'NO DISPONIBLE';
+        document.getElementById('diagViewport').textContent = `${window.innerWidth}×${window.innerHeight}px OK`;
+      })();
+
+      const bugLogs = [];
+      document.getElementById('bugReportForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const cat = document.getElementById('bugCategory').value;
+        const desc = document.getElementById('bugDescription').value.trim();
+        if (!desc) return;
+        bugLogs.push({
+          timestamp: new Date().toISOString(),
+          category: cat,
+          description: desc,
+          viewport: `${window.innerWidth}x${window.innerHeight}`,
+          userAgent: navigator.userAgent
+        });
+        document.getElementById('bugDescription').value = '';
+        showToast(`Reporte registrado (${cat}). ¡Gracias por ayudar a mejorar la web!`);
+      });
+
+      document.getElementById('btnExportBugLog').addEventListener('click', () => {
+        const payload = {
+          app: 'Marcos y cuadros — GitHub Portfolio Demo',
+          generatedAt: new Date().toISOString(),
+          diagnostics: {
+            viewport: `${window.innerWidth}x${window.innerHeight}`,
+            ordersStored: salesList.length
+          },
+          reports: bugLogs
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'diagnostico-marcos-y-cuadros.json';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast('Log de diagnóstico JSON descargado');
+      });
+    })();
+  </script>
+</body>
+</html>
