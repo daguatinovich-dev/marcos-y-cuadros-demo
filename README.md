@@ -1,4 +1,4 @@
-# 🖼️ Marcos y cuadros — Demo Oficial de Portafolio
+# Marcos y cuadros — Demo Oficial de Portafolio
 
 > **"Arte que decora tus espacios"** — Plataforma web interactiva de catálogo 3D, estudio de personalización en tiempo real y gestión comercial desarrollada para el emprendimiento **Marcos y cuadros**.
 
@@ -8,7 +8,7 @@
 
 ---
 
-## ✨ Características Principales
+## Características Principales
 
 1. **Exhibición Interactiva 3D:**
    - Galería con inclinación 3D reactiva al cursor, reflejo especular tipo vidrio, **Escenario Giratorio** y selector de iluminación de pared (*Pared Cálida Real*, *Estudio Oscuro*, *Luz Neón Roja*).
@@ -26,7 +26,7 @@
 
 ---
 
-## 📁 Estructura del Repositorio
+## Estructura del Repositorio
 
 ```text
 marcos-y-cuadros-demo/
@@ -42,21 +42,4 @@ marcos-y-cuadros-demo/
     ├── cuadro-ysya-after.jpg               # Cuadro estilo álbum YSY A
     ├── promo-bad-bunny-verano.jpg          # Flyer promo 1×$13.000 / 2×$20.000
     └── flyer-instituto-santo-cristo.jpg    # Flyer presentación Instituto Santo Cristo
-```
 
----
-
-## 🚀 Cómo subirlo a tu GitHub y activarlo en GitHub Pages
-
-1. Creá un nuevo repositorio público en GitHub llamado `marcos-y-cuadros-demo`.
-2. Subí todos los archivos de esta carpeta (asegurate de incluir la carpeta `assets/` junto con `index.html`) o ejecutá en tu terminal:
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: demo interactiva Marcos y cuadros para portafolio"
-   git branch -M main
-   git remote add origin https://github.com/TU-USUARIO/marcos-y-cuadros-demo.git
-   git push -u origin main
-   ```
-3. En GitHub, entrá a **Settings → Pages → Build and deployment**, seleccioná **Deploy from a branch**, elegí la rama `main` y carpeta `/ (root)`, y hacé clic en **Save**.
-4. En menos de 1 minuto tu demo quedará publicada en `https://TU-USUARIO.github.io/marcos-y-cuadros-demo/`.
